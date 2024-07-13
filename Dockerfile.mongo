@@ -1,0 +1,4 @@
+FROM mongo:latest
+
+COPY mongo/mongo-init.js /docker-entrypoint-initdb.d/
+COPY src/main/resources/stores/stores.json /docker-entrypoint-initdb.d/

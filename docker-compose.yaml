@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: jumbo-mongodb:latest
+    container_name: jumbo-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+
+  jumbo-locator:
+    build: .
+    container_name: jumbo-locator
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://root:example@mongodb:27017/jumbo
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo-data:
+    driver: local
