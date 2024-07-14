@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-db = db.getSiblingDB('jumbo');
 
 const storesFilePath = path.resolve('/docker-entrypoint-initdb.d/stores.json');
 

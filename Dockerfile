@@ -1,14 +1,11 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:21-jdk-slim
-
-# Set the working directory
+# First stage: build the application
+FROM maven:3.8-eclipse-temurin-21-alpine as build
+COPY . /app
 WORKDIR /app
+RUN mvn clean package -DskipTests
 
-# Copy the project's build artifacts to the container
-COPY target/jumbo-locator-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose the port the application runs on
+# Second stage: create the final image
+FROM eclipse-temurin:21-alpine
+COPY --from=build /app/target/jumbo-locator-*.jar /app/jumbo-locator.jar
 EXPOSE 8080
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/jumbo-locator.jar"]

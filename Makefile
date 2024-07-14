@@ -9,13 +9,6 @@ build:
 	@echo "Building Docker image..."
 	docker build -t $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
 
-# Push Docker image to Docker Hub (Optional)
-.PHONY: push
-push:
-	@echo "Pushing Docker image to Docker Hub..."
-	docker tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) your-dockerhub-username/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
-	docker push your-dockerhub-username/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
-
 # Start the application using Docker Compose
 .PHONY: up
 up: build
