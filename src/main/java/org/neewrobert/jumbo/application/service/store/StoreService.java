@@ -40,7 +40,7 @@ public class StoreService {
     }
 
     public Store addStore(Store store) {
-        if (store.uuid() == null){
+        if (store.uuid() == null) {
             store = store.withUuid(UUID.randomUUID().toString());
         }
         StoreEntity savedEntity = storeRepository.save(storeMapper.toEntity(store));

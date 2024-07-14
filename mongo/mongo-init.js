@@ -41,6 +41,9 @@ if (Array.isArray(storesData)) {
 
     // Create a geospatial index on the location field
     db.stores.createIndex({ location: '2dsphere' });
+
+    // Create a unique index on the uuid field
+    db.stores.createIndex({ uuid: 1 }, { unique: true });
 } else {
     print('storesData is not an array:', storesData);
 }
