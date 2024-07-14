@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "org.neewrobert.jumbo.adapter.out.persistence")
 @EnableCaching
 public class JumboLocatorApplication {
 

@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.neewrobert.jumbo.config.MongoDBTestContainerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -25,12 +25,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(MongoDBTestContainerConfig.class)
 @Testcontainers
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {
+        "spring.data.mongodb.uri=mongodb://localhost:27017/test",
+        "spring.data.redis.host=localhost",
+        "spring.data.redis.port=6379"
+})
 public class StoreControllerIntegrationTest {
 
 
