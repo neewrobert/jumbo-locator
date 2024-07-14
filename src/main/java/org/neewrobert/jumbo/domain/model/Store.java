@@ -1,5 +1,7 @@
 package org.neewrobert.jumbo.domain.model;
 
+import java.io.Serializable;
+
 public record Store(
         String id,
         String city,
@@ -18,7 +20,7 @@ public record Store(
         Boolean collectionPoint,
         String sapStoreID,
         String todayClose
-) {
+) implements Serializable {
     public Store withUuid(String uuid) {
         return new Store(
                 id,

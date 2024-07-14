@@ -4,6 +4,8 @@ import org.neewrobert.jumbo.adapter.out.persistence.StoreEntity;
 import org.neewrobert.jumbo.adapter.out.persistence.StoreRepository;
 import org.neewrobert.jumbo.application.mapper.StoreMapper;
 import org.neewrobert.jumbo.domain.model.Store;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class StoreService {
         this.storeMapper = storeMapper;
     }
 
+    @Cacheable(value = "closestStores", keyGenerator = "customKeyGenerator")
     public List<Store> findClosestStores(double latitude, double longitude, int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit);
         return storeRepository.findByLocationNear(latitude, longitude, pageRequest).stream()
@@ -31,6 +34,7 @@ public class StoreService {
                 .toList();
     }
 
+    @Cacheable(value = "closestStoresOpenNow", keyGenerator = "customKeyGenerator")
     public List<Store> findClosestStoresOpenNow(double latitude, double longitude, int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit);
         var currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -39,6 +43,7 @@ public class StoreService {
                 .toList();
     }
 
+    @CacheEvict(value = {"closestStores", "closestStoresOpenNow"}, allEntries = true)
     public Store addStore(Store store) {
         if (store.uuid() == null) {
             store = store.withUuid(UUID.randomUUID().toString());
@@ -47,6 +52,7 @@ public class StoreService {
         return storeMapper.toDomain(savedEntity);
     }
 
+    @CacheEvict(value = {"closestStores", "closestStoresOpenNow"}, allEntries = true)
     public Optional<Store> updateStore(String uuid, Store storeToUpdate) {
         return storeRepository.findByUuid(uuid)
                 .map(existingStore -> {
