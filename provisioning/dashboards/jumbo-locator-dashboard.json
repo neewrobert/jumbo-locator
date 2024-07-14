@@ -1,0 +1,297 @@
+{
+  "id": null,
+  "uid": "jumbo-locator-dashboard",
+  "title": "Jumbo Locator Metrics",
+  "tags": [],
+  "timezone": "browser",
+  "schemaVersion": 27,
+  "version": 0,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Request Latency (95th Percentile)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Latency (95th Percentile)",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "s",
+          "label": "Seconds",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Request Count",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count[5m])) by (method, uri)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{method}} {{uri}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Requests per Second",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Request Error Rate",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m])) / sum(rate(http_server_requests_seconds_count[5m]))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Error Rate",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "Error Rate",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "System Load (1m avg)",
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "system_load_average_1m",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Load (1m avg)",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Load",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "CPU Usage",
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total[1m])",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "CPU Usage",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "CPU Usage",
+          "logBase": 1,
+          "min": null,
+          "max": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Memory Usage",
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Heap Memory Usage",
+          "refId": "A"
+        },
+        {
+          "expr": "jvm_memory_used_bytes{area=\"nonheap\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Non-Heap Memory Usage",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": "Bytes",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Store Add Requests",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(stores_add_requests[5m])) by (addressName)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{addressName}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Requests per Second",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Store Update Requests",
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(stores_update_requests[5m])) by (uuid)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{uuid}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Requests per Second",
+          "logBase": 1,
+          "min": null,
+          "max": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "show": true
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "datasource",
+        "label": "Datasource",
+        "query": "prometheus",
+        "current": {
+          "text": "Prometheus",
+          "value": "prometheus"
+        }
+      }
+    ]
+  }
+}
