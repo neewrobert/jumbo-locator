@@ -61,4 +61,7 @@ public class StoreService {
                 });
     }
 
+    public Optional<Store> getStore(String uuid) {
+        return storeRepository.findByUuid(uuid).map(storeMapper::toDomain);
+    }
 }

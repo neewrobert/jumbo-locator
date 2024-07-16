@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,9 @@ public class StoreController {
 
         Store createdStore = storeService.addStore(storeMapper.toDomain(storeDto));
         meterRegistry.counter("stores.add.requests", "addressName", storeDto.addressName()).increment();
-        return ResponseEntity.ok(storeMapper.toDto(createdStore));
+
+        var uri = "/stores/" + createdStore.uuid(); //this is new from the original code
+        return ResponseEntity.created(URI.create(uri)).body(storeMapper.toDto(createdStore));
     }
 
     @Operation(summary = "Update an existing store", description = "Update an existing store by UUID")
@@ -102,5 +105,21 @@ public class StoreController {
         return store.map(value -> ResponseEntity.ok(storeMapper.toDto(value)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    //get an existing store by UUID
+    //IT'S NEW FROM THE ORIGINAL CODE
+    @Operation(summary = "Get an existing store", description = "Get an existing store by UUID")
+    @GetMapping("/stores/{uuid}")
+    public ResponseEntity<StoreDto> getStore(
+            @Parameter(description = "UUID of the store to get", required = true)
+            @PathVariable String uuid) {
+
+        logger.info("Received request to get store with UUID: {}", uuid);
+        meterRegistry.counter("stores.get.requests", "uuid", uuid).increment();
+        Optional<Store> store = storeService.getStore(uuid);
+
+        return store.map(value -> ResponseEntity.ok(storeMapper.toDto(value)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

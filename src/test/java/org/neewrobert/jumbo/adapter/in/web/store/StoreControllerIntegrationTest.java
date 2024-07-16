@@ -6,7 +6,7 @@ import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.neewrobert.jumbo.config.MongoDBTestContainerConfig;
+import org.neewrobert.jumbo.config.RepositoryTestContainerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(MongoDBTestContainerConfig.class)
+@Import(RepositoryTestContainerConfig.class)
 @Testcontainers
 @TestPropertySource(properties = {
         "spring.data.mongodb.uri=mongodb://localhost:27017/test",
@@ -42,6 +42,8 @@ public class StoreControllerIntegrationTest {
 
     @LocalServerPort
     private int port = 0;
+
+    private final String STORE_UUID = "EOgKYx4XFiQAAAFJa_YYZ4At";
 
     @BeforeEach
     public void setUp() {
@@ -99,7 +101,7 @@ public class StoreControllerIntegrationTest {
                 .when()
                 .post("/stores")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("city", equalTo("New City"))
                 .body("postalCode", equalTo("12345"));
     }
@@ -136,6 +138,25 @@ public class StoreControllerIntegrationTest {
                 .body("error", equalTo("Invalid Parameter"));
     }
 
+    @Test
+    public void testGetStoreByUuid(){
+        given()
+                .when()
+                .get("/stores/" + STORE_UUID)
+                .then()
+                .statusCode(200)
+                .body("city", equalTo("'s Gravendeel"));
+    }
+
+    @Test
+    public void testGetStoreByUuidNotFound(){
+        given()
+                .when()
+                .get("/stores/invalid")
+                .then()
+                .statusCode(404);
+    }
+
     private void insertTestData() {
         List<Document> stores = List.of(
                 new Document()
@@ -145,7 +166,7 @@ public class StoreControllerIntegrationTest {
                         .append("street2", "37")
                         .append("street3", "")
                         .append("addressName", "Jumbo 's Gravendeel Gravendeel Centrum")
-                        .append("uuid", "EOgKYx4XFiQAAAFJa_YYZ4At")
+                        .append("uuid", STORE_UUID)
                         .append("location", new Document("type", "Point")
                                 .append("coordinates", List.of(4.615551, 51.778461)))
                         .append("complexNumber", "33249")
